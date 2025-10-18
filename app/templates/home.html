@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block title %}Home{% endblock %}
+
+{% block head %}{% endblock %}
+
+{% block body %}
+
+<main class="container py-5">
+    <section class="card card-body">
+        <h1 class="display-1 text-center">El Correo de Yuri</h1>
+        <p>
+            Este es el inicio de la web, rellenaré un poco con un Lorem ipsum dolor sit 
+            amet consectetur, adipisicing elit. Vel maiores voluptas veritatis autem 
+            cum soluta. Necessitatibus recusandae quia excepturi hic dicta natus tenetur! 
+            Omnis laboriosam odit modi explicabo labore deleniti!
+        </p>
+    
+    </section>
+
+    {% if user.is_authenticated == False %}
+    <div class="text-center">
+        <a class="btn btn-secondary" href="/signin">SignIn</a>
+        <a class="btn btn-dark" href="/signup">SignUp</a>
+    </div>
+    {% endif %}
+</main>
+
+{% endblock %}

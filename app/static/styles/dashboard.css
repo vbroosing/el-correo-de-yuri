@@ -1,0 +1,30 @@
+/* DASHBOARD JEFE */
+.titulo_dashboard_jefe {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+.btn_horas_dashboard_jefe {
+    background-color: #6c757d; 
+    border-radius: 8px; 
+    font-size: 1.2rem; 
+    font-weight: 500; 
+    text-decoration: none;
+}
+.btn_horas_dashboard_jefe:hover {
+    background-color: #5a6268;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: all 0.2s ease-in-out;
+}
+.btn_trabajadores_dashboard_jefe {
+    background-color: #212529; 
+    border-radius: 8px; 
+    font-size: 1.2rem; 
+    font-weight: 500; 
+    text-decoration: none;
+}
+.btn_trabajadores_dashboard_jefe:hover {
+    background-color: #1a1e21;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    transition: all 0.2s ease-in-out;
+}

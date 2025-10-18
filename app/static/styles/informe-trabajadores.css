@@ -1,0 +1,53 @@
+.btn_horas_informe_trabajadores {
+    background-color: #6c757d; 
+    border-radius: 8px; 
+    font-size: 1.2rem; 
+    font-weight: 500; 
+    text-decoration: none;
+}
+.btn_horas_informe_trabajadores:hover {
+    background-color: #5a6268;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: all 0.2s ease-in-out;
+}
+.btn_informe_trabajadores {
+    background-color: #212529; 
+    border-radius: 8px; 
+    font-size: 1.2rem; 
+    font-weight: 500; 
+    text-decoration: none;
+}
+.btn_informe_trabajadores:hover {
+    background-color: #1a1e21;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    transition: all 0.2s ease-in-out;
+}
+
+
+/* Estilos para el panel de filtros */
+.filtros-panel {
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 12px;
+}
+
+/* Estilos para los inputs y labels */
+.filtros-panel .form-label {
+    color: #343a40;
+    font-size: 1rem;
+}
+
+.filtros-panel .form-control {
+    border: 1px solid #ced4da;
+    border-radius: 8px;
+    padding: 0.5rem 0.75rem;
+    font-size: 1rem;
+}
+
+.filtros-panel .input-group-text {
+    border-radius: 0 8px 8px 0;
+    padding: 0.5rem 0.75rem;
+}
+

@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %}
+Informe Trabajadores
+{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+<link rel="stylesheet" href="{% static 'styles/informe-trabajadores.css' %}">
+{% endblock %} 
+
+{% block body %}
+
+<div class="contenedor d-flex flex-column justify-content-center align-items-center vh-100">
+    <h1 class="display-4 fw-light titulo_dashboard_jefe">Bienvenido</h1>
+    <hr class="w-25 mx-auto border-dark mb-4">
+
+    <!-- Panel de filtros dentro de un formulario -->
+    <form method="post" action="/datos-filtrados" class="w-75">
+        {% csrf_token %}
+
+        <!-- Botones BUSCAR y FILTROS -->
+        <div class="botones d-flex flex-column gap-3 mb-4">
+            <button type="submit" class="btn btn-lg px-5 py-3 text-white btn_horas_informe_trabajadores">
+                Buscar
+            </button>
+            <a href="/" class="btn btn-lg px-5 py-3 text-white btn_informe_trabajadores">
+                Filtros
+            </a>
+        </div>
+
+        <!-- Panel de filtros -->
+        <div class="filtros-panel bg-light p-4 rounded shadow-sm">
+            <div class="row g-3">
+                <div class="col-12">
+                    <label class="form-label fw-bold">Sexo</label>
+                    <div class="input-group">
+                        <input type="text" name="sexo" class="form-control" placeholder="">
+                        <span class="input-group-text bg-white border-start-0"><i class="bi bi-person"></i></span>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <label class="form-label fw-bold">Cargo</label>
+                    <div class="input-group">
+                        <input type="text" name="cargo" class="form-control" placeholder="">
+                        <span class="input-group-text bg-white border-start-0"><i class="bi bi-briefcase"></i></span>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <label class="form-label fw-bold">Dpto.</label>
+                    <div class="input-group">
+                        <input type="text" name="departamento" class="form-control" placeholder="">
+                        <span class="input-group-text bg-white border-start-0"><i class="bi bi-building"></i></span>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <label class="form-label fw-bold">Área</label>
+                    <div class="input-group">
+                        <input type="text" name="area" class="form-control" placeholder="">
+                        <span class="input-group-text bg-white border-start-0"><i class="bi bi-grid"></i></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+{% endblock %}

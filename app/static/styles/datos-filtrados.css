@@ -1,0 +1,28 @@
+.container-resultados {
+    max-width: 900px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+.btn-export {
+    font-size: 1rem;
+    padding: 0.5rem 1rem;
+    margin-right: 0.5rem;
+}
+.card-trabajador {
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    background: #f8f9fa;
+}
+.card-title {
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+}
+.card-subtitle {
+    color: #6c757d;
+    font-size: 0.9rem;
+}
