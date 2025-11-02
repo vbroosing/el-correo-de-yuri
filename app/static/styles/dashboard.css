@@ -43,3 +43,86 @@
     align-items: center; 
     justify-content: center;
 }
+
+/* PERFIL PERSONAL RRHH */
+.btn-rrhh {
+    background-color: #6c757d;
+    color: white;
+    border-radius: 8px;
+    font-size: 1.2rem;
+    font-weight: 500;
+    text-decoration: none;
+    padding: 1rem 1.5rem;
+    min-height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease-in-out;
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto;
+}
+.btn-rrhh:hover {
+    background-color: #5a6268;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.btn-notificaciones {
+    position: relative; /* Para que el punto rojo se posicione respecto a este */
+    background-color: #212529;
+    color: white;
+    border-radius: 8px;
+    font-size: 1.2rem;
+    font-weight: 500;
+    text-decoration: none;
+    padding: 1rem 1.5rem;
+    min-height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease-in-out;
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto;
+}
+.btn-notificaciones:hover {
+    background-color: #1a1e21;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Punto de notificación pendiente */
+.notification-dot {
+    position: absolute;
+    top: -4px;      /* Justo encima del borde del botón */
+    right: -4px;    /* Justo fuera del borde derecho del botón */
+    width: 14px;
+    height: 14px;
+    background-color: #dc3545; /* Rojo */
+    border-radius: 50%;
+    border: 2px solid white;
+    z-index: 10; /* Asegura que esté sobre otros elementos */
+}
+
+/* Si no hay notificaciones pendientes, ocultar el punto */
+.notification-dot-hidden {
+    display: none;
+}
+
+/* Contenedor centralizado */
+.container-dashboard {
+    max-width: 500px;
+    margin: 3rem auto;
+    padding: 2rem;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+}
+
+.dashboard-title {
+    font-size: 1.75rem;
+    font-weight: bold;
+    margin-bottom: 1.5rem;
+    text-align: center;
+}

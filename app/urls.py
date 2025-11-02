@@ -22,6 +22,7 @@ urlpatterns = [
     path('modificar-datos-personales/', views.modificar_datos_personales, name='modificar_datos_personales'),
 
     # FUNCIONES PERSONAL RRHH
+    path('llenar-ficha-trabajador/', views.llenar_ficha_trabajador, name='llenar_ficha_trabajador'),
 
 
 ]

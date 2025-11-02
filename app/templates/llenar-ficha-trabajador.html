@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Llenar Ficha{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="{% static 'styles/llenar-ficha-trabajador.css' %}">
+{% endblock %}
+
+{% block body %}
+
+<div class="container mt-4">
+    <h1 class="form-title">Llenar Ficha de Trabajador</h1>
+
+    <!-- Formulario -->
+    <form method="post">
+        {% csrf_token %}
+
+        <!-- Sección: Datos personales -->
+        <div class="section-box">
+            <h3>Datos personales</h3>
+
+            <!-- Campo: Nombre -->
+            <div class="mb-3">
+                <label for="nombre" class="form-label">Nombre:</label>
+                <input type="text" id="nombre" name="nombre" class="form-control-custom" placeholder="Ingresa el nombre">
+            </div>
+
+            <!-- Campo: Apellidos -->
+            <div class="mb-3">
+                <label for="apellidos" class="form-label">Apellidos:</label>
+                <input type="text" id="apellidos" name="apellidos" class="form-control-custom" placeholder="Ingresa los apellidos">
+            </div>
+
+            <!-- Campo: Rut -->
+            <div class="mb-3">
+                <label for="rut" class="form-label">Rut:</label>
+                <div class="rut-container">
+                    <input type="text" id="rut" name="rut" class="form-control-custom rut-input" placeholder="12.345.678">
+                    <span class="rut-separator">-</span>
+                    <input type="text" id="dv" name="dv" class="form-control-custom" style="width: 60px;" placeholder="9">
+                </div>
+            </div>
+
+            <!-- Campo: Dirección -->
+            <div class="mb-3">
+                <label for="direccion" class="form-label">Dirección:</label>
+                <input type="text" id="direccion" name="direccion" class="form-control-custom" placeholder="Ingresa la dirección completa">
+            </div>
+
+            <!-- Campo: Sexo -->
+            <div class="mb-3">
+                <label for="sexo" class="form-label">Sexo:</label>
+                <select id="sexo" name="sexo" class="form-select-custom">
+                    <option value="">Selecciona una opción</option>
+                    <option value="Masculino">Masculino</option>
+                    <option value="Femenino">Femenino</option>
+                    <option value="Otro">Otro</option>
+                </select>
+            </div>
+
+            <!-- Campo: Teléfono -->
+            <div class="mb-3">
+                <label for="telefono" class="form-label">Teléfono:</label>
+                <input type="tel" id="telefono" name="telefono" class="form-control-custom" placeholder="+56 9 1234 5678">
+            </div>
+        </div>
+
+        <!-- Sección: Datos laborales -->
+        <div class="section-box">
+            <h3>Datos laborales</h3>
+
+            <!-- Campo: Cargo -->
+            <div class="mb-3">
+                <label for="cargo" class="form-label">Cargo:</label>
+                <select id="cargo" name="cargo" class="form-select-custom">
+                    <option value="">Selecciona una opción</option>
+                    <option value="Ingeniero">Ingeniero</option>
+                    <option value="Analista">Analista</option>
+                    <option value="Diseñador">Diseñador</option>
+                    <option value="Gerente">Gerente</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Botón: Registrar Nuevo Trabajador -->
+        <button type="submit" class="btn-registrar">REGISTRAR NUEVO TRABAJADOR</button>
+    </form>
+</div>
+
+{% endblock %}

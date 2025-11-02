@@ -69,7 +69,7 @@ def signout(req):
 # TRANSVERSALES
 @login_required
 def dashboard(req):
-    return render(req, 'dashboard.html')
+    return render(req, 'dashboard.html', {'notificaciones_pendientes': True})
 
 # PERFIL JEFE RRHH
 @login_required
@@ -169,9 +169,13 @@ def informe_horas_trabajadas(req):
     return render(req, 'informe-horas-trabajadas.html')
 
 # PERFIL PERSONAL RRHH
+@login_required
+def llenar_ficha_trabajador(req):
+    return render(req, 'llenar-ficha-trabajador.html')
 
 # PERFIL TRABAJADOR
 
+@login_required
 def seleccionar_cargas_familiares(req):
     cargas_familiares = [
     {'nombre': 'María López', 'relacion': 'Esposa'},
@@ -182,6 +186,7 @@ def seleccionar_cargas_familiares(req):
     ]
     return render(req, 'seleccionar-cargas.html', {'cargas_familiares': cargas_familiares})
 
+@login_required
 def seleccionar_contactos_emergencia(req):
     contactos_emergencia = [
     {'nombre': 'María López', 'relacion': 'Esposa'},

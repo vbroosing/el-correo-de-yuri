@@ -28,6 +28,32 @@
 </main>
 
 <!-- DASHBOARD PERSONAL RRHH -->
+<section class="container-dashboard">
+    <h1 class="dashboard-title">Bienvenido</h1>
+
+    <!-- Botones -->
+    <div class="d-flex flex-column gap-3">
+        <!-- Llenar Ficha de Trabajador -->
+        <a href="/llenar-ficha-trabajador" class="btn-rrhh">Llenar Ficha de Trabajador</a>
+
+        <!-- Listar Trabajadores -->
+        <a href="#" class="btn-rrhh">Listar Trabajadores</a>
+
+        <!-- Modificar Trabajador -->
+        <a href="#" class="btn-rrhh">Modificar Trabajador</a>
+
+        <!-- Notificaciones -->
+        <a href="#" class="btn-notificaciones">
+            Notificaciones
+            {% if notificaciones_pendientes %}
+                <span class="notification-dot"></span>
+            {% else %}
+                <span class="notification-dot notification-dot-hidden"></span>
+            {% endif %}
+        </a>
+    </div>
+</section>
+
 <!-- DASHBOARD TRABAJADOR -->
 <section class="container d-flex flex-column justify-content-center align-items-center container-dashb-trabajador">
     <div class="text-center mb-4">

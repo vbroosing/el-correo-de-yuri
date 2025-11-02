@@ -1,0 +1,113 @@
+.form-title {
+    font-size: 1.75rem;
+    font-weight: bold;
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+.section-box {
+    background: #f8f9fa;
+    border: 2px solid #dee2e6;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+.section-box h3 {
+    font-size: 1.3rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+    color: #333;
+}
+
+.form-label {
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    display: block;
+    text-align: left;
+}
+
+.form-control-custom {
+    border: 2px solid #dee2e6;
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+    transition: border-color 0.2s ease-in-out;
+    width: 100%;
+    max-width: 100%;
+}
+.form-control-custom:focus {
+    border-color: #6c757d;
+    box-shadow: none;
+}
+
+/* Campo RUT con separador */
+.rut-container {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+.rut-input {
+    flex: 1;
+}
+.rut-separator {
+    font-weight: bold;
+    font-size: 1.2rem;
+    color: #495057;
+}
+
+/* Selector desplegable */
+.form-select-custom {
+    border: 2px solid #dee2e6;
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+    transition: border-color 0.2s ease-in-out;
+    width: 100%;
+    max-width: 100%;
+    background: white;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    position: relative;
+}
+.form-select-custom:focus {
+    border-color: #6c757d;
+    box-shadow: none;
+}
+.form-select-custom::after {
+    content: "▼";
+    position: absolute;
+    right: 1rem;
+    pointer-events: none;
+    color: #495057;
+}
+
+/* Botón Registrar */
+.btn-registrar {
+    background-color: #6c757d;
+    color: white;
+    border-radius: 8px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    padding: 0.75rem 1.5rem;
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto;
+    display: block;
+    transition: all 0.2s ease-in-out;
+}
+.btn-registrar:hover {
+    background-color: #5a6268;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Barra superior */
+.header-bar {
+    background: #f8f9fa;
+    border-bottom: 2px solid #dee2e6;
+    padding: 0.75rem 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
