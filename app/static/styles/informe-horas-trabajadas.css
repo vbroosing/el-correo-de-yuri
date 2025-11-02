@@ -1,0 +1,58 @@
+.header-bar {
+    background: #f8f9fa;
+    border-bottom: 2px solid #dee2e6;
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.menu-icon {
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+.user-badge {
+    background: #e9ecef;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    font-weight: bold;
+}
+.avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #ced4da;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    color: #495057;
+}
+.container-informe {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+.checkbox-item {
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+.btn-descarga {
+    font-size: 1.1rem;
+    padding: 0.75rem 1.5rem;
+    margin-right: 1rem;
+}
+.btn-csv {
+    text-decoration: underline;
+    font-weight: bold;
+    color: #0d6efd;
+}

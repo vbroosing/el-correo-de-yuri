@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Modificar Datos Personales{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="{% static 'styles/modificar-datos-personales.css' %}">
+{% endblock %}
+
+{% block body %}
+
+<div class="container-fluid mt-4 d-flex justify-content-center align-items-center" style="min-height: 80vh;">
+    <!-- Contenedor del formulario -->
+    <div class="form-wrapper p-4 bg-white rounded shadow-sm">
+        <h1 class="form-title text-center mb-4">MODIFICAR DATOS PERSONALES</h1>
+        
+        <hr>
+        
+        <!-- Formulario -->
+        <form method="post">
+            {% csrf_token %}
+            
+            <!-- Campo: Nombre -->
+            <div class="mb-3">
+                <label for="nombre" class="form-label">Nombre</label>
+                <input type="text" id="nombre" name="nombre" class="form-control-custom w-100" value="{{ usuario.nombre }}" placeholder="Ingresa tu nombre">
+            </div>
+            
+            <!-- Campo: Apellido -->
+            <div class="mb-3">
+                <label for="apellido" class="form-label">Apellido</label>
+                <input type="text" id="apellido" name="apellido" class="form-control-custom w-100" value="{{ usuario.apellido }}" placeholder="Ingresa tu apellido">
+            </div>
+            
+            <!-- Campo: Sexo -->
+            <div class="mb-3">
+                <label for="sexo" class="form-label">Sexo</label>
+                <input type="text" id="sexo" name="sexo" class="form-control-custom w-100" value="{{ usuario.sexo }}" placeholder="Ej: Masculino, Femenino">
+            </div>
+            
+            <!-- Campo: Dirección -->
+            <div class="mb-3">
+                <label for="direccion" class="form-label">Dirección</label>
+                <input type="text" id="direccion" name="direccion" class="form-control-custom w-100" value="{{ usuario.direccion }}" placeholder="Ingresa tu dirección completa">
+            </div>
+            
+            <!-- Botón: Modificar Datos -->
+            <button type="submit" class="btn btn-modificar w-100">MODIFICAR DATOS</button>
+        </form>
+    </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Contactos De Emergencia{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="{% static 'styles/seleccionar-contactos.css' %}">
+{% endblock %}
+
+{% block body %}
+
+<div class="container mt-4">
+    <h1 class="display-5 fw-bold mb-3">Modificar Contactos De Emergencia</h1>
+
+    <!-- Botones de acción -->
+    <div class="d-flex align-items-center mb-4">
+        <a href="#" class="btn-add-contacto">AÑADIR CONTACTO</a>
+        <a href="#" class="link-delete">Eliminar contactos seleccionadas</a>
+    </div>
+
+    <!-- Lista de contactos familiares -->
+    <div class="card shadow-sm">
+        <div class="card-body p-0">
+            {% comment %} Simulación de datos — en producción esto vendrá de la BD {% endcomment %}
+            {% for contacto in contactos_emergencia %}
+                <div class="cargo-item">
+                    <div class="cargo-info">
+                        <input type="checkbox" id="contacto_{{ forloop.counter }}" class="form-check-input me-2">
+                        <label for="contacto_{{ forloop.counter }}" class="mb-0">
+                            {{ contacto.nombre }} ({{ contacto.relacion }})
+                        </label>
+                    </div>
+                    <a href="#" class="cargo-actions">modificar datos</a>
+                </div>
+            {% empty %}
+                <div class="text-center p-4 text-muted">
+                    No tienes contactos de emergencia registrados.
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+{% endblock %}

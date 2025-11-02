@@ -1,0 +1,72 @@
+.form-wrapper {
+    max-width: 800px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 2.5rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+    background: #fff;
+}
+
+/* Título — centrado, pero con ancho completo */
+.form-title {
+    font-size: 1.75rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 1.5rem;
+    width: 100%;
+    text-align: center;
+}
+
+/* Botón — igual de ancho que el título */
+.btn-modificar {
+    background-color: #212529;
+    color: white;
+    border-radius: 8px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    padding: 0.75rem 1.5rem;
+    width: 100%;
+    transition: all 0.2s ease-in-out;
+    text-align: center;
+}
+.btn-modificar:hover {
+    background-color: #1a1e21;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Inputs — un poco más angostos que el título y botón */
+.form-control-custom {
+    border: 2px solid #dee2e6;
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+    transition: border-color 0.2s ease-in-out;
+    width: 100%;
+    max-width: 100%;
+}
+.form-control-custom:focus {
+    border-color: #6c757d;
+    box-shadow: none;
+}
+
+/* Etiquetas — alineadas a la izquierda con los inputs */
+.form-label {
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    display: block;
+    text-align: left;
+}
+
+/* Para pantallas pequeñas — reduce el ancho máximo */
+@media (max-width: 768px) {
+    .form-wrapper {
+        max-width: 95%;
+        padding: 1.5rem;
+    }
+    .form-title {
+        font-size: 1.5rem;
+    }
+}

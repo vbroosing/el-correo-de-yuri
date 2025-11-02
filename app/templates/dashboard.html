@@ -7,6 +7,7 @@
 {% endblock %}
 
 {% block body %}
+
 <!-- DASHBOARD JEFE RRHH -->
 <main class="container d-flex flex-column justify-content-center align-items-center">
     <div class="text-center mb-4">
@@ -15,15 +16,40 @@
         </h1>
         <hr class="w-25 mx-auto border-dark">
     </div>
-
+    
     <div class="d-flex flex-column gap-3 ">
-        <a href="/" class="btn btn-lg px-5 py-3 text-white btn_horas_dashboard_jefe">
+        <a href="/informe-horas-trabajadas" class="btn btn-lg px-5 py-3 text-white btn_sec_dashboard">
             INFORME HORAS TRABAJADAS
         </a>
-        <a href="/informe-trabajadores" class="btn btn-lg px-5 py-3 text-white btn_trabajadores_dashboard_jefe">
+        <a href="/informe-trabajadores" class="btn btn-lg px-5 py-3 text-white btn_prin_dashboard">
             INFORME TRABAJADORES
         </a>
     </div>
 </main>
 
+<!-- DASHBOARD PERSONAL RRHH -->
+<!-- DASHBOARD TRABAJADOR -->
+<section class="container d-flex flex-column justify-content-center align-items-center container-dashb-trabajador">
+    <div class="text-center mb-4">
+        <h1 class="display-4 fw-light titulo_dashboard_jefe">¿Qué vas a hacer?</h1>
+        <hr class="w-25 mx-auto border-dark">
+    </div>
+
+    <div class="cont_btn_dashboard_trabajador">
+        <!-- Botón: Modificar Datos Personales -->
+        <a href="/modificar-datos-personales" class="btn btn-lg px-5 py-3 text-white btn_sec_dashboard">MODIFICAR DATOS PERSONALES</a>
+        
+        <!-- Botón: Modificar Cargas Familiares -->
+        <a href="/seleccionar-cargas" class="btn btn-lg px-5 py-3 text-white btn_sec_dashboard">MODIFICAR CARGAS FAMILIARES</a>
+
+        <!-- Botón: Modificar Contactos de Emergencia -->
+        <a href="/seleccionar-contactos" class="btn btn-lg px-5 py-3 text-white btn_sec_dashboard">MODIFICAR CONTACTOS DE EMERGENCIA</a>
+        
+        <!-- Botón: MARCAR -->
+        <a href="#" class="btn btn-lg px-5 py-3 text-white btn_prin_dashboard btn-marcar">MARCAR</a>
+    </div>
+
+</section>
+
 {% endblock %}
+

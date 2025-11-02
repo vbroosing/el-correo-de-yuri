@@ -5,6 +5,9 @@ from django.contrib.auth import login, logout, authenticate
 from django.db import IntegrityError
 from django.contrib.auth.decorators import login_required
 
+# MODELOS
+from app.models import Trabajador
+
 # HOME
 def home(req):
     return render(req, 'home.html')
@@ -28,7 +31,7 @@ def signup(req):
                 except IntegrityError:
                     return render(req, 'signup.html', {
                         'form': form,
-                        'error': 'El usuario ya existte',
+                        'error': 'El usuario ya existe',
                     })
             else:
                 return render(req, 'signup.html', {
@@ -61,14 +64,22 @@ def signin(req):
 @login_required
 def signout(req):
     logout(req)
-    return redirect('home')
+    return redirect('home.html')
 
+# TRANSVERSALES
 @login_required
 def dashboard(req):
     return render(req, 'dashboard.html')
 
+# PERFIL JEFE RRHH
 @login_required
 def informe_trabajadores(req):
+    return render(req, 'informe-trabajadores.html')
+
+@login_required
+def datos_filtrados(req):
+
+     # AQUI FALTA LA CONEXION CON LA DB
     trabajadores = [
         {
             'nombre': 'Juan Pérez',
@@ -97,23 +108,89 @@ def informe_trabajadores(req):
             'sexo': 'F',
             'cargo': 'Gerente de Proyectos',
             'departamento': 'Gestión'
+        },
+        {
+            'nombre': 'Ana Torres',
+            'rut': '34.567.890-1',
+            'sexo': 'F',
+            'cargo': 'Gerente de Proyectos',
+            'departamento': 'Gestión'
+        },
+        {
+            'nombre': 'Ana Torres',
+            'rut': '34.567.890-1',
+            'sexo': 'F',
+            'cargo': 'Gerente de Proyectos',
+            'departamento': 'Gestión'
+        },
+        {
+            'nombre': 'Ana Torres',
+            'rut': '34.567.890-1',
+            'sexo': 'F',
+            'cargo': 'Gerente de Proyectos',
+            'departamento': 'Gestión'
+        },
+        {
+            'nombre': 'Ana Torres',
+            'rut': '34.567.890-1',
+            'sexo': 'F',
+            'cargo': 'Gerente de Proyectos',
+            'departamento': 'Gestión'
+        },
+        {
+            'nombre': 'Ana Torres',
+            'rut': '34.567.890-1',
+            'sexo': 'F',
+            'cargo': 'Gerente de Proyectos',
+            'departamento': 'Gestión'
         }
     ]
 
-    return render(req, 'datos-filtrados.html', {'trabajadores': trabajadores})
-
-def datos_filtrados(req):
-
-    trabajadores = req.trabajadores
-
-    if req.method == 'POST':
-        # Aquí aplicarías tus filtros reales según request.POST
-        # Por ahora solo mostramos todos los datos
-        pass
-
-    contexto = {
-        'trabajadores': trabajadores,
-        'title': 'Datos Filtrados'
+    
+    filtros = {
+        'sexo': req.GET.get('sexo', 'M').strip(),
+        'cargo': req.GET.get('cargo', '').strip(),
+        'departamento': req.GET.get('departamento', '').strip(),
+        'area': req.GET.get('area', '').strip(),
     }
 
-    return render(req, 'datos-filtrados.html', contexto)
+    # Aplicar filtros no vacíos
+    for campo, valor in filtros.items():
+        if valor:
+            trabajadores = trabajadores.filter(**{campo: valor})
+
+    return render(req, 'datos-filtrados.html', {
+        'trabajadores': trabajadores,
+        'filtros': filtros,
+    })
+
+@login_required
+def informe_horas_trabajadas(req):
+    return render(req, 'informe-horas-trabajadas.html')
+
+# PERFIL PERSONAL RRHH
+
+# PERFIL TRABAJADOR
+
+def seleccionar_cargas_familiares(req):
+    cargas_familiares = [
+    {'nombre': 'María López', 'relacion': 'Esposa'},
+    {'nombre': 'Carlos Ruiz', 'relacion': 'Hijo'},
+    {'nombre': 'Ana Torres', 'relacion': 'Madre'},
+    {'nombre': 'Luis Pérez', 'relacion': 'Hermano'},
+    {'nombre': 'Alberta Jara', 'relacion': 'Hija'}
+    ]
+    return render(req, 'seleccionar-cargas.html', {'cargas_familiares': cargas_familiares})
+
+def seleccionar_contactos_emergencia(req):
+    contactos_emergencia = [
+    {'nombre': 'María López', 'relacion': 'Esposa'},
+    {'nombre': 'Carlos Ruiz', 'relacion': 'Hijo'},
+    {'nombre': 'Ana Torres', 'relacion': 'Madre'},
+    {'nombre': 'Luis Pérez', 'relacion': 'Hermano'},
+    {'nombre': 'Alberta Jara', 'relacion': 'Hija'}
+    ]
+    return render(req, 'seleccionar-contactos.html', {'contactos_emergencia': contactos_emergencia})
+
+def modificar_datos_personales(req):
+    return render(req, 'modificar-datos-personales.html')

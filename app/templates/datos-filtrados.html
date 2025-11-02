@@ -17,7 +17,7 @@ Datos Filtrados
 
     <!-- Botones de exportación -->
     <div class="d-flex justify-content-center mb-4">
-        <a href="?export_excel=1" class="btn btn-success btn-export">
+        <a href="export_excel" class="btn btn-success btn-export">
             <i class="bi bi-file-earmark-excel"></i> Excel
         </a>
         <a href="?export_csv=1" class="btn btn-info btn-export text-white">
@@ -51,6 +51,9 @@ Datos Filtrados
         <div class="alert alert-warning text-center">
             No se encontraron resultados.
         </div>
+        <!-- {% if horas_trabajadas %}
+            <p>HORAS TRABAJADAS!!!</p>
+        {% endif %} -->
     {% endif %}
 </div>
 
