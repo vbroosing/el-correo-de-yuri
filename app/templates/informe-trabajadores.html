@@ -18,16 +18,14 @@ Informe Trabajadores
     <hr class="w-25 mx-auto border-dark mb-4">
 
     <!-- Panel de filtros dentro de un formulario -->
-    <form method="get" action="/datos-filtrados" class="w-75">
+    <form method="post" action="/datos-filtrados/" class="w-75">
+        {% csrf_token %}
         <!-- ¡NO necesitas {% csrf_token %} en formularios GET! -->
         <!-- Botones BUSCAR y FILTROS -->
         <div class="botones d-flex flex-column gap-3 mb-4">
             <button type="submit" class="btn btn-lg px-5 py-3 text-white btn_horas_informe_trabajadores">
                 Buscar
             </button>
-            <a href="/" class="btn btn-lg px-5 py-3 text-white btn_informe_trabajadores">
-                Filtros
-            </a>
         </div>
 
         <!-- Panel de filtros -->

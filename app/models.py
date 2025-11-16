@@ -13,10 +13,6 @@ class Telefono(models.Model):
     numero_telefono = models.CharField(max_length=20)
     def __str__(self): return f'{self.numero_telefono}'
 
-class Sexo_trabajador(models.TextChoices):
-    MASCULINO = 'M', 'Masculino'
-    FEMENINO = 'F', 'Femenino'
-    OTRO = 'O', 'Otro'
 
 # ENTIDADES CON DEPENDENCIA SIMPLE
 class Departamento(models.Model):
@@ -33,6 +29,11 @@ class Cargo(models.Model):
     def __str__(self):
         return f'{self.nombre_cargo}'
    
+class Sexo_trabajador(models.TextChoices):
+    MASCULINO = 'M', 'Masculino'
+    FEMENINO = 'F', 'Femenino'
+    OTRO = 'O', 'Otro'
+
 class Trabajador(models.Model):
     rut_trabajador = models.CharField(max_length=12)
     nombre_trabajador = models.CharField(max_length=100)

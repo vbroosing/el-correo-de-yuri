@@ -22,36 +22,32 @@
 
             <!-- Campo: Nombre -->
             <div class="mb-3">
-                <label for="nombre" class="form-label">Nombre:</label>
-                <input type="text" id="nombre" name="nombre" class="form-control-custom" placeholder="Ingresa el nombre">
+                <label for="nombre_trabajador" class="form-label">Nombre:</label>
+                <input type="text" id="nombre_trabajador" name="nombre_trabajador" class="form-control-custom" placeholder="Ingresa el nombre">
             </div>
 
             <!-- Campo: Apellidos -->
             <div class="mb-3">
-                <label for="apellidos" class="form-label">Apellidos:</label>
-                <input type="text" id="apellidos" name="apellidos" class="form-control-custom" placeholder="Ingresa los apellidos">
+                <label for="apellidos_trabajador" class="form-label">Apellidos:</label>
+                <input type="text" id="apellidos_trabajador" name="apellidos_trabajador" class="form-control-custom" placeholder="Ingresa los apellidos">
             </div>
 
             <!-- Campo: Rut -->
             <div class="mb-3">
-                <label for="rut" class="form-label">Rut:</label>
-                <div class="rut-container">
-                    <input type="text" id="rut" name="rut" class="form-control-custom rut-input" placeholder="12.345.678">
-                    <span class="rut-separator">-</span>
-                    <input type="text" id="dv" name="dv" class="form-control-custom" style="width: 60px;" placeholder="9">
-                </div>
+                <label for="rut_trabajador" class="form-label">Rut (Sin puntos ni guión):</label>
+                <input type="text" id="rut_trabajador" name="rut_trabajador" class="form-control-custom rut-input" placeholder="12345678k">
             </div>
 
             <!-- Campo: Dirección -->
             <div class="mb-3">
-                <label for="direccion" class="form-label">Dirección:</label>
-                <input type="text" id="direccion" name="direccion" class="form-control-custom" placeholder="Ingresa la dirección completa">
+                <label for="direccion_trabajador" class="form-label">Dirección:</label>
+                <input type="text" id="direccion_trabajador" name="direccion_trabajador" class="form-control-custom" placeholder="Ingresa la dirección completa">
             </div>
 
             <!-- Campo: Sexo -->
             <div class="mb-3">
-                <label for="sexo" class="form-label">Sexo:</label>
-                <select id="sexo" name="sexo" class="form-select-custom">
+                <label for="sexo_trabajador" class="form-label">Sexo:</label>
+                <select id="sexo_trabajador" name="sexo_trabajador  " class="form-select-custom">
                     <option value="">Selecciona una opción</option>
                     <option value="Masculino">Masculino</option>
                     <option value="Femenino">Femenino</option>
@@ -72,13 +68,12 @@
 
             <!-- Campo: Cargo -->
             <div class="mb-3">
-                <label for="cargo" class="form-label">Cargo:</label>
-                <select id="cargo" name="cargo" class="form-select-custom">
+                <label for="id_cargo" class="form-label">Cargo:</label>
+                <select id="id_cargo" name="id_cargo" class="form-select-custom">
                     <option value="">Selecciona una opción</option>
-                    <option value="Ingeniero">Ingeniero</option>
-                    <option value="Analista">Analista</option>
-                    <option value="Diseñador">Diseñador</option>
-                    <option value="Gerente">Gerente</option>
+                    {% for cargo in cargos %}
+                        <option value="{{ cargo.id }}">{{ cargo.nombre_cargo }}</option>
+                    {% endfor %}
                 </select>
             </div>
         </div>

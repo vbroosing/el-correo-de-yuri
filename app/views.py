@@ -4,9 +4,10 @@ from django.contrib.auth.models import User
 from django.contrib.auth import login, logout, authenticate
 from django.db import IntegrityError
 from django.contrib.auth.decorators import login_required
+from .decorators import group_required, multi_group_required
 
 # MODELOS
-from app.models import Trabajador
+from app.models import Trabajador, Cargo
 
 # HOME
 def home(req):
@@ -64,101 +65,57 @@ def signin(req):
 @login_required
 def signout(req):
     logout(req)
-    return redirect('home.html')
+    return render(req, 'home.html')
+    # return redirect('home.html')
 
 # TRANSVERSALES
 @login_required
 def dashboard(req):
-    return render(req, 'dashboard.html', {'notificaciones_pendientes': True})
+    # Verificar si el usuario es superuser
+    if req.user.is_superuser:
+        es_jefe_rrhh = True
+        es_personal_rrhh = True
+        es_trabajador = True
+    else:
+        # Verificar si el usuario pertenece a ciertos grupos
+        es_jefe_rrhh = req.user.groups.filter(name='Jefe RRHH').exists()
+        es_personal_rrhh = req.user.groups.filter(name='Personal RRHH').exists()
+        es_trabajador = req.user.groups.filter(name='Trabajador').exists()
+    context = {
+        'es_jefe_rrhh': es_jefe_rrhh,
+        'es_personal_rrhh': es_personal_rrhh,
+        'es_trabajador': es_trabajador,
+    }
+    return render(req, 'dashboard.html', context)
+    # return render(req, 'dashboard.html', {'notificaciones_pendientes': True})
 
 # PERFIL JEFE RRHH
 @login_required
+@multi_group_required(['Jefe RRHH', 'Personal RRHH'])
 def informe_trabajadores(req):
     return render(req, 'informe-trabajadores.html')
 
 @login_required
 def datos_filtrados(req):
-
-     # AQUI FALTA LA CONEXION CON LA DB
-    trabajadores = [
-        {
-            'nombre': 'Juan Pérez',
-            'rut': '12.345.678-9',
-            'sexo': 'M',
-            'cargo': 'Ingeniero de Software',
-            'departamento': 'Tecnología'
-        },
-        {
-            'nombre': 'María López',
-            'rut': '98.765.432-1',
-            'sexo': 'F',
-            'cargo': 'Analista de Datos',
-            'departamento': 'Análisis'
-        },
-        {
-            'nombre': 'Carlos Ruiz',
-            'rut': '23.456.789-0',
-            'sexo': 'M',
-            'cargo': 'Diseñador UI/UX',
-            'departamento': 'Diseño'
-        },
-        {
-            'nombre': 'Ana Torres',
-            'rut': '34.567.890-1',
-            'sexo': 'F',
-            'cargo': 'Gerente de Proyectos',
-            'departamento': 'Gestión'
-        },
-        {
-            'nombre': 'Ana Torres',
-            'rut': '34.567.890-1',
-            'sexo': 'F',
-            'cargo': 'Gerente de Proyectos',
-            'departamento': 'Gestión'
-        },
-        {
-            'nombre': 'Ana Torres',
-            'rut': '34.567.890-1',
-            'sexo': 'F',
-            'cargo': 'Gerente de Proyectos',
-            'departamento': 'Gestión'
-        },
-        {
-            'nombre': 'Ana Torres',
-            'rut': '34.567.890-1',
-            'sexo': 'F',
-            'cargo': 'Gerente de Proyectos',
-            'departamento': 'Gestión'
-        },
-        {
-            'nombre': 'Ana Torres',
-            'rut': '34.567.890-1',
-            'sexo': 'F',
-            'cargo': 'Gerente de Proyectos',
-            'departamento': 'Gestión'
-        },
-        {
-            'nombre': 'Ana Torres',
-            'rut': '34.567.890-1',
-            'sexo': 'F',
-            'cargo': 'Gerente de Proyectos',
-            'departamento': 'Gestión'
-        }
-    ]
-
     
+    # AQUI FALTA LA CONEXION CON LA DB
+    # CONEXIÓN SIN FILTROS DE BUSQUEDA
+    trabajadores = Trabajador.objects.filter()
+    cargos = Cargo.objects.filter()
+
     filtros = {
-        'sexo': req.GET.get('sexo', 'M').strip(),
-        'cargo': req.GET.get('cargo', '').strip(),
+        'sexo_trabajador': req.GET.get('sexo', '').strip(),
+        'id_cargo': req.GET.get('cargo', '').strip(),
         'departamento': req.GET.get('departamento', '').strip(),
         'area': req.GET.get('area', '').strip(),
     }
 
     # Aplicar filtros no vacíos
     for campo, valor in filtros.items():
-        if valor:
+        if valor != '':
             trabajadores = trabajadores.filter(**{campo: valor})
 
+    # print(trabajadores)
     return render(req, 'datos-filtrados.html', {
         'trabajadores': trabajadores,
         'filtros': filtros,
@@ -171,7 +128,49 @@ def informe_horas_trabajadas(req):
 # PERFIL PERSONAL RRHH
 @login_required
 def llenar_ficha_trabajador(req):
-    return render(req, 'llenar-ficha-trabajador.html')
+    if req.method == 'POST':
+        # Obtener el ID del cargo seleccionado
+        id_cargo_str = req.POST.get('id_cargo', '').strip()
+
+        if not id_cargo_str:
+            # Obtener los cargos para volver a mostrarlos en el template
+            cargos = Cargo.objects.all()
+            return render(req, 'llenar-ficha-trabajador.html', {
+                'error': 'Debes seleccionar un cargo.',
+                'cargos': cargos
+            })
+
+        try:
+            cargo = Cargo.objects.get(id=int(id_cargo_str))
+        except (Cargo.DoesNotExist, ValueError):
+            cargos = Cargo.objects.all()
+            return render(req, 'llenar-ficha-trabajador.html', {
+                'error': 'El cargo seleccionado no es válido.',
+                'cargos': cargos
+            })
+
+        # Crear el diccionario con los datos del trabajador
+        campos_trabajador = {
+            'rut_trabajador': req.POST.get('rut_trabajador', '').strip(),
+            'nombre_trabajador': req.POST.get('nombre_trabajador', '').strip(),
+            'apellidos_trabajador': req.POST.get('apellidos_trabajador', '').strip(),
+            'direccion_trabajador': req.POST.get('direccion_trabajador', '').strip(),
+            'fecha_ingreso_trabajador': req.POST.get('fecha_ingreso_trabajador', '').strip(),
+            'sexo_trabajador': req.POST.get('sexo_trabajador', '').strip(),
+            'id_cargo': cargo  # Instancia válida de Cargo
+        }
+
+        # Crear el trabajador en la base de datos
+        trabajador = Trabajador.objects.create(**campos_trabajador)
+
+        # Opcional: redirigir a una página de éxito o mostrar mensaje
+        return redirect('llenar-ficha-trabajador.html')  # Asegúrate de tener una URL con nombre 'exito'
+
+    else:
+        # Para solicitudes GET, obtener los cargos y renderizar el formulario
+        cargos = Cargo.objects.all()
+        return render(req, 'llenar-ficha-trabajador.html', {'cargos': cargos})
+
 
 # PERFIL TRABAJADOR
 
