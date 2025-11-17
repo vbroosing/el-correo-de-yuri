@@ -95,7 +95,9 @@ def dashboard(req):
 def informe_trabajadores(req):
     return render(req, 'informe-trabajadores.html')
 
+
 @login_required
+@multi_group_required(['Jefe RRHH', 'Personal RRHH'])
 def datos_filtrados(req):
     
     # AQUI FALTA LA CONEXION CON LA DB
@@ -173,7 +175,6 @@ def llenar_ficha_trabajador(req):
 
 
 # PERFIL TRABAJADOR
-
 @login_required
 def seleccionar_cargas_familiares(req):
     cargas_familiares = [
