@@ -13,7 +13,6 @@ class Telefono(models.Model):
     numero_telefono = models.CharField(max_length=20)
     def __str__(self): return f'{self.numero_telefono}'
 
-
 # ENTIDADES CON DEPENDENCIA SIMPLE
 class Departamento(models.Model):
     nombre_departamento = models.CharField(max_length=100)
@@ -68,22 +67,35 @@ class Contacto_emergencia(models.Model):
     parentesco_contacto_emergencia = models.CharField(max_length=50)
     
     id_trabajador = models.ForeignKey(Trabajador, on_delete=models.CASCADE)
-    
+
+class Tipo_marcado(models.TextChoices):
+    ENTRADA = 'E', 'Entrada'
+    SALIDA = 'S', 'Salida'
+    PAUSA = 'P', 'Pausa'
+
+class Origen_marcado(models.TextChoices):
+    BIOMETRICO = 'B', 'Biometrico'
+    MANUAL = 'M', 'Manual'
+    APP = 'A', 'App'
+
+class Marcado(models.Model):
+    fecha_marcado = models.DateTimeField(auto_now_add=True)
+    origen_marcado = models.CharField(max_length=100)
+    tipo_marcado = models.CharField(
+        max_length=1,
+        choices=Tipo_marcado.choices,
+    )
+    origen_marcado = models.CharField(
+        max_length=1,
+        choices= Origen_marcado.choices
+    )
+    id_trabajador = models.ForeignKey(Trabajador, on_delete=models.CASCADE)
+
 # ENTIDADES CON DEPENDENCIA DOBLE
+class Trabajador_telefono(models.Model):
+    id_trabajador = models.ForeignKey(Trabajador, on_delete=models.CASCADE)
+    id_telefono = models.ForeignKey(Telefono, on_delete=models.CASCADE)
 
-
-# class Task(models.Model):
-#     title = models.CharField(max_length=100)
-#     description = models.TextField(blank=True)
-#     created = models.DateTimeField(auto_now_add=True)
-#     date_completed = models.DateTimeField(null=True, blank=True)
-#     # completado = models.BooleanField(default=False)
-#     important = models.BooleanField(default=False)
-
-#     # Llave foranea de la tabla user generada por django
-#     # Para asignar un usuario a cada tarea
-#     user = models.ForeignKey(User, on_delete=models.CASCADE)
-
-#     def __str__(self):
-#         return self.title + ' by ' + self.user.username
-
+class Contacto_emergencia_telefono(models.Model):
+    id_contacto_emergencia = models.ForeignKey(Trabajador, on_delete=models.CASCADE)
+    id_telefono = models.ForeignKey(Telefono, on_delete=models.CASCADE)
