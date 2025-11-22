@@ -10,6 +10,7 @@ from .decorators import group_required, multi_group_required
 from app.models import Trabajador, Cargo
 
 # HOME
+@login_required
 def home(req):
     return render(req, 'home.html')
 
@@ -100,7 +101,6 @@ def informe_trabajadores(req):
 @multi_group_required(['Jefe RRHH', 'Personal RRHH'])
 def datos_filtrados(req):
     
-    # AQUI FALTA LA CONEXION CON LA DB
     # CONEXIÓN SIN FILTROS DE BUSQUEDA
     trabajadores = Trabajador.objects.filter()
     cargos = Cargo.objects.filter()
@@ -117,7 +117,7 @@ def datos_filtrados(req):
         if valor != '':
             trabajadores = trabajadores.filter(**{campo: valor})
 
-    # print(trabajadores)
+    print(trabajadores)
     return render(req, 'datos-filtrados.html', {
         'trabajadores': trabajadores,
         'filtros': filtros,
@@ -164,16 +164,18 @@ def llenar_ficha_trabajador(req):
 
         # Crear el trabajador en la base de datos
         trabajador = Trabajador.objects.create(**campos_trabajador)
+         # Para solicitudes GET, obtener los cargos y renderizar el formulario
+        cargos = Cargo.objects.all()
+        return render(req, 'llenar-ficha-trabajador.html', {'cargos': cargos})
 
-        # Opcional: redirigir a una página de éxito o mostrar mensaje
-        return redirect('llenar-ficha-trabajador.html')  # Asegúrate de tener una URL con nombre 'exito'
-
+       
     else:
         # Para solicitudes GET, obtener los cargos y renderizar el formulario
         cargos = Cargo.objects.all()
         return render(req, 'llenar-ficha-trabajador.html', {'cargos': cargos})
 
 
+    
 # PERFIL TRABAJADOR
 @login_required
 def seleccionar_cargas_familiares(req):
