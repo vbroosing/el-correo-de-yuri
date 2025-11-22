@@ -1,5 +1,3 @@
-# app/tests/test_selenium.py
-
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
@@ -67,14 +65,6 @@ class MySeleniumTests(StaticLiveServerTestCase):
 
         # Verificar que el título de la página contiene "Dashboard"
         self.assertIn("Dashboard", self.browser.title)
-
-        # Opcional: verificar que hay un elemento que indica que el usuario está logueado
-        # Por ejemplo, un mensaje como "Bienvenido, testuser"
-        # try:
-        #     welcome_msg = self.browser.find_element(By.TAG_NAME, "body").text
-        #     self.assertIn(self.username, welcome_msg)
-        # except:
-        #     pass  # Si no hay mensaje, no falla la prueba
 
     def test_login_failure(self):
         # Ir a la página de login
