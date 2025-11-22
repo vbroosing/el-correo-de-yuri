@@ -5,9 +5,10 @@ from django.contrib.auth import login, logout, authenticate
 from django.db import IntegrityError
 from django.contrib.auth.decorators import login_required
 from .decorators import group_required, multi_group_required
+from django.contrib import messages
 
 # MODELOS
-from app.models import Trabajador, Cargo
+from app.models import Trabajador, Cargo, Carga_familiar
 
 # HOME
 @login_required
@@ -129,63 +130,154 @@ def informe_horas_trabajadas(req):
 
 # PERFIL PERSONAL RRHH
 @login_required
+@multi_group_required(['Personal RRHH']) # Asumo que solo Personal RRHH puede crear
 def llenar_ficha_trabajador(req):
+    cargos = Cargo.objects.all()
+    
     if req.method == 'POST':
-        # Obtener el ID del cargo seleccionado
-        id_cargo_str = req.POST.get('id_cargo', '').strip()
+        # 1. Recolección de datos y validación básica de presencia
+        
+        # Lista de campos POST requeridos (basados en tu modelo Trabajador)
+        campos_requeridos = [
+            'rut_trabajador', 'nombre_trabajador', 'apellidos_trabajador',
+            'direccion_trabajador', 'sexo_trabajador', 'id_cargo'
+        ]
+        
+        campos_trabajador = {}
+        error = False
+        
+        for campo in campos_requeridos:
+            valor = req.POST.get(campo, '').strip()
+            if not valor:
+                error = f'El campo "{campo}" es obligatorio.'
+                break
+            campos_trabajador[campo] = valor
 
-        if not id_cargo_str:
-            # Obtener los cargos para volver a mostrarlos en el template
-            cargos = Cargo.objects.all()
+        if error:
+            # Si falta un campo, renderiza con el error
             return render(req, 'llenar-ficha-trabajador.html', {
-                'error': 'Debes seleccionar un cargo.',
-                'cargos': cargos
+                'error': error,
+                'cargos': cargos,
+                'valores_anteriores': req.POST # Para no perder lo que ya escribió el usuario
             })
-
+        
+        # 2. Validación de Llave Foránea (Cargo)
         try:
-            cargo = Cargo.objects.get(id=int(id_cargo_str))
+            id_cargo_str = campos_trabajador.pop('id_cargo') # Quitar el ID para obtener la instancia
+            cargo_instance = Cargo.objects.get(id=int(id_cargo_str))
         except (Cargo.DoesNotExist, ValueError):
-            cargos = Cargo.objects.all()
             return render(req, 'llenar-ficha-trabajador.html', {
                 'error': 'El cargo seleccionado no es válido.',
-                'cargos': cargos
+                'cargos': cargos,
+                'valores_anteriores': req.POST
+            })
+        
+        # 3. Crear el Trabajador
+        try:
+            # La fecha_ingreso_trabajador tiene auto_now_add=True, no la necesitamos en el POST
+            Trabajador.objects.create(
+                id_cargo=cargo_instance, # Asignamos la instancia
+                **campos_trabajador
+            )
+            # Redirigir al listado o a una página de éxito
+            return redirect('trabajador_listado') # Necesitas una URL llamada 'trabajador_listado'
+            
+        except Exception as e:
+             # Manejar posibles errores de base de datos o formato (ej. si el RUT ya existe)
+            return render(req, 'llenar-ficha-trabajador.html', {
+                'error': f'Error al guardar el trabajador: {e}',
+                'cargos': cargos,
+                'valores_anteriores': req.POST
             })
 
-        # Crear el diccionario con los datos del trabajador
-        campos_trabajador = {
-            'rut_trabajador': req.POST.get('rut_trabajador', '').strip(),
-            'nombre_trabajador': req.POST.get('nombre_trabajador', '').strip(),
-            'apellidos_trabajador': req.POST.get('apellidos_trabajador', '').strip(),
-            'direccion_trabajador': req.POST.get('direccion_trabajador', '').strip(),
-            'fecha_ingreso_trabajador': req.POST.get('fecha_ingreso_trabajador', '').strip(),
-            'sexo_trabajador': req.POST.get('sexo_trabajador', '').strip(),
-            'id_cargo': cargo  # Instancia válida de Cargo
-        }
-
-        # Crear el trabajador en la base de datos
-        trabajador = Trabajador.objects.create(**campos_trabajador)
-         # Para solicitudes GET, obtener los cargos y renderizar el formulario
-        cargos = Cargo.objects.all()
-        return render(req, 'llenar-ficha-trabajador.html', {'cargos': cargos})
-
-       
     else:
-        # Para solicitudes GET, obtener los cargos y renderizar el formulario
-        cargos = Cargo.objects.all()
+        # Solicitud GET
         return render(req, 'llenar-ficha-trabajador.html', {'cargos': cargos})
-
 
     
 # PERFIL TRABAJADOR
 @login_required
+def llenar_ficha_carga_familiar(req):
+    if req.method == 'POST':
+        # Obtener datos del formulario
+        nombre = req.POST.get('nombre_carga_familiar', '').strip()
+        parentesco = req.POST.get('parentesco_carga_familiar', '').strip()
+        rut = req.POST.get('rut_carga_familiar', '').strip()
+        sexo = req.POST.get('sexo_carga_familiar', '').strip()
+
+        # # Validación mínima (puedes mejorarla si necesitas)
+        # if not (nombre and parentesco and rut and sexo):
+        #     messages.error(req, "Por favor, complete todos los campos obligatorios.")
+        #     return render(req, 'llenar-ficha-carga-familiar.html')
+
+        try:
+            # Encontrar al trabajador por nombre y apellido del usuario
+            user = req.user
+            trabajador = Trabajador.objects.get(nombre_trabajador=user.first_name, apellidos_trabajador=user.last_name)
+
+            cargas_query = Carga_familiar.objects.filter(id_trabajador=trabajador)
+            cargas_familiares = [
+                {'nombre': carga.nombre_carga_familiar, 'relacion': carga.parentesco_carga_familiar}
+                for carga in cargas_query
+            ]
+
+            # Crear y guardar la carga familiar
+            Carga_familiar.objects.create(
+                id_trabajador=trabajador,
+                nombre_carga_familiar=nombre,
+                parentesco_carga_familiar=parentesco,
+                rut_carga_familiar=rut,
+                sexo_carga_familiar=sexo
+            )
+
+            messages.success(req, "Carga familiar registrada exitosamente.")
+            return render(req, 'seleccionar-cargas.html', {'cargas_familiares': cargas_familiares})
+            
+
+        except Trabajador.DoesNotExist:
+            messages.error(req, "No se encontró un trabajador asociado a tu usuario. Verifica tu nombre y apellido en el perfil.")
+            return render(req, 'seleccionar-cargas.html', {'cargas_familiares': cargas_familiares})
+
+    # Si es GET, solo renderiza el formulario
+    return render(req, 'llenar-ficha-carga-familiar.html')
+
+@login_required
 def seleccionar_cargas_familiares(req):
-    cargas_familiares = [
-    {'nombre': 'María López', 'relacion': 'Esposa'},
-    {'nombre': 'Carlos Ruiz', 'relacion': 'Hijo'},
-    {'nombre': 'Ana Torres', 'relacion': 'Madre'},
-    {'nombre': 'Luis Pérez', 'relacion': 'Hermano'},
-    {'nombre': 'Alberta Jara', 'relacion': 'Hija'}
-    ]
+
+    if req.method == 'GET':
+        # Obtener el nombre y apellido del usuario autenticado
+        user = req.user
+        nombre = user.first_name
+        apellido = user.last_name
+
+        try:
+            # Buscar el trabajador por nombre y apellido
+            trabajador = Trabajador.objects.get(nombre_trabajador=nombre, apellidos_trabajador=apellido)
+            # Obtener sus cargas familiares
+            cargas_query = Carga_familiar.objects.filter(id_trabajador=trabajador)
+            # Formatear como lista de diccionarios
+            cargas_familiares = [
+                {'nombre': carga.nombre_carga_familiar, 'relacion': carga.parentesco_carga_familiar}
+                for carga in cargas_query
+            ]
+        except Trabajador.DoesNotExist:
+            # Si no existe el trabajador, devolver lista vacía o mensaje
+            cargas_familiares = []
+    else:
+        # Si no es POST, también podrías aplicar la misma lógica o dejar vacío
+        user = req.user
+        nombre = user.first_name
+        apellido = user.last_name
+        try:
+            trabajador = Trabajador.objects.get(nombre_trabajador=nombre, apellidos_trabajador=apellido)
+            cargas_query = Carga_familiar.objects.filter(id_trabajador=trabajador)
+            cargas_familiares = [
+                {'nombre': carga.nombre_carga_familiar, 'relacion': carga.parentesco_carga_familiar}
+                for carga in cargas_query
+            ]
+        except Trabajador.DoesNotExist:
+            cargas_familiares = []
+
     return render(req, 'seleccionar-cargas.html', {'cargas_familiares': cargas_familiares})
 
 @login_required

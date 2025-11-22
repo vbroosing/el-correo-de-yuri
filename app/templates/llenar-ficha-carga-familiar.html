@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Llenar Ficha{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="{% static 'styles/llenar-ficha-trabajador.css' %}">
+{% endblock %}
+
+{% block body %}
+
+<div class="container mt-4">
+    <h1 class="form-title">Llenar Ficha Carga Familiar</h1>
+
+    <!-- Formulario -->
+    <form method="post">
+        {% csrf_token %}
+
+        <!-- Sección: Datos personales -->
+        <div class="section-box">
+            <h3>Datos Carga Familiar</h3>
+
+            <!-- Campo: Nombre -->
+            <div class="mb-3">
+                <label for="nombre_carga_familiar" class="form-label">Nombre:</label>
+                <input type="text" id="nombre_carga_familiar" name="nombre_carga_familiar" class="form-control-custom" placeholder="Ingresa el nombre">
+            </div>
+
+            <!-- Campo: Apellidos -->
+            <div class="mb-3">
+                <label for="parentesco_carga_familiar" class="form-label">Parentésco:</label>
+                <input type="text" id="parentesco_carga_familiar" name="parentesco_carga_familiar" class="form-control-custom" placeholder="Ingresa el parentésco">
+            </div>
+
+            <!-- Campo: Rut -->
+            <div class="mb-3">
+                <label for="rut_carga_familiar" class="form-label">Rut (Sin puntos ni guión):</label>
+                <input type="text" id="rut_carga_familiar" name="rut_carga_familiar" class="form-control-custom rut-input" placeholder="12345678k">
+            </div>
+
+            <!-- Campo: Sexo -->
+            <div class="mb-3">
+                <label for="sexo_carga_familiar" class="form-label">Sexo:</label>
+                <select id="sexo_carga_familiar" name="sexo_carga_familiar  " class="form-select-custom">
+                    <option value="">Selecciona una opción</option>
+                    <option value="Masculino">Masculino</option>
+                    <option value="Femenino">Femenino</option>
+                    <option value="Otro">Otro</option>
+                </select>
+            </div>
+
+            
+        </div>
+
+        <!-- Botón: Registrar Nuevo Trabajador -->
+        <button type="submit" class="btn-registrar">REGISTRAR NUEVA CARGA FAMILIAR</button>
+    </form>
+</div>
+
+{% endblock %}

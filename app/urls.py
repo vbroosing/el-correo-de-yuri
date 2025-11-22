@@ -17,6 +17,7 @@ urlpatterns = [
     path('datos-filtrados/', views.datos_filtrados, name='datos_filtrados'),
 
     # FUNCIONES TRABAJADOR
+    path('llenar-ficha-carga-familiar/', views.llenar_ficha_carga_familiar, name='llenar_ficha_carga_familiar'),
     path('seleccionar-cargas/', views.seleccionar_cargas_familiares, name='seleccionar_cargas_familiares'),
     path('seleccionar-contactos/', views.seleccionar_contactos_emergencia, name='seleccionar_contactos_emergencia'),
     path('modificar-datos-personales/', views.modificar_datos_personales, name='modificar_datos_personales'),
