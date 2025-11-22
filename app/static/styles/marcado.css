@@ -1,0 +1,81 @@
+
+.container_marcado {
+    max-width: 600px;
+    margin: 30px auto;
+    padding: 20px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.05);
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 30px;
+    color: #333;
+    font-weight: 600;
+}
+
+.clock-container {
+    text-align: center;
+    margin: 30px 0;
+}
+
+.clock-display {
+    font-size: 3rem;
+    font-weight: bold;
+    padding: 20px;
+    border: 3px solid #333;
+    border-radius: 8px;
+    display: inline-block;
+    min-width: 150px;
+    background-color: #fff;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.validation-section {
+    margin-top: 30px;
+    padding: 20px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    border: 1px solid #dee2e6;
+}
+
+.validation-item {
+    display: flex;
+    align-items: center;
+    margin: 15px 0;
+    font-size: 1rem;
+}
+
+.validation-item input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    margin-right: 10px;
+    accent-color: #28a745; /* Verde para check */
+}
+
+.validation-item.unchecked input[type="checkbox"] {
+    accent-color: #dc3545; /* Rojo para unchecked */
+}
+
+.btn-mark {
+    display: block;
+    width: 100%;
+    padding: 15px;
+    margin-top: 30px;
+    background-color: #212529;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    cursor: pointer;
+    text-align: center;
+    transition: background-color 0.3s;
+}
+
+.btn-mark:hover {
+    background-color: #1a1e21;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}

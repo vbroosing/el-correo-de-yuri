@@ -20,6 +20,7 @@ urlpatterns = [
     path('seleccionar-cargas/', views.seleccionar_cargas_familiares, name='seleccionar_cargas_familiares'),
     path('seleccionar-contactos/', views.seleccionar_contactos_emergencia, name='seleccionar_contactos_emergencia'),
     path('modificar-datos-personales/', views.modificar_datos_personales, name='modificar_datos_personales'),
+    path('marcado/', views.marcado, name='marcado'),
 
     # FUNCIONES PERSONAL RRHH
     path('llenar-ficha-trabajador/', views.llenar_ficha_trabajador, name='llenar_ficha_trabajador'),

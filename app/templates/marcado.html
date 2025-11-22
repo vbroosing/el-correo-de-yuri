@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Marcar Asistencia{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="{% static 'styles/marcado.css' %}">
+{% endblock %}
+
+{% block body %}
+<div class="container_marcado">
+        <h1>MARCAR</h1>
+
+        <div class="clock-container">
+            <div id="clock" class="clock-display">00:00</div>
+        </div>
+
+        <div class="validation-section">
+            <div class="validation-item">
+                <input type="checkbox" id="ip-validation" checked disabled>
+                <label for="ip-validation">IP validation</label>
+            </div>
+            <div class="validation-item unchecked">
+                <input type="checkbox" id="geoloc-validation" disabled>
+                <label for="geoloc-validation">geoloc validation</label>
+            </div>
+        </div>
+        
+        <form method="post">
+        {% csrf_token %}    
+            <button type="submit" class="btn-mark btn-dark">MARCAR ASISTENCIA</button>
+        </form>
+    </div>
+
+    
+{% endblock %}
+
+

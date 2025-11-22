@@ -201,3 +201,6 @@ def seleccionar_contactos_emergencia(req):
 
 def modificar_datos_personales(req):
     return render(req, 'modificar-datos-personales.html')
+
+def marcado(req):
+    return render(req, 'marcado.html')
