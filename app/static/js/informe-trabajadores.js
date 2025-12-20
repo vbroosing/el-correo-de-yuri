@@ -1,82 +1,129 @@
 document.addEventListener('DOMContentLoaded', function() {
+    console.log("Script de filtros cargado correctamente.");
+
+    // 1. Obtener referencias a los selects
     const selectArea = document.getElementById('select-area');
     const selectDepto = document.getElementById('select-departamento');
     const selectCargo = document.getElementById('select-cargo');
 
-    // Guardamos las opciones originales para poder restaurarlas al filtrar
-    const opcionesDeptoOriginales = Array.from(selectDepto.options);
-    const opcionesCargoOriginales = Array.from(selectCargo.options);
+    if (!selectArea || !selectDepto || !selectCargo) {
+        console.error("Error: No se encontraron los selectores con los IDs esperados.");
+        return;
+    }
 
-    // 1. LOGICA AL CAMBIAR ÁREA
+    // 2. Guardar TODAS las opciones originales en memoria (clonando los datos)
+    // Esto previene que se pierdan al limpiar el HTML
+    const dataDepartamentos = Array.from(selectDepto.querySelectorAll('option')).map(opt => ({
+        value: opt.value,
+        text: opt.textContent,
+        areaId: opt.getAttribute('data-area-id')
+    }));
+
+    const dataCargos = Array.from(selectCargo.querySelectorAll('option')).map(opt => ({
+        value: opt.value,
+        text: opt.textContent,
+        deptoId: opt.getAttribute('data-departamento-id'),
+        areaId: opt.getAttribute('data-area-id')
+    }));
+
+    // Función auxiliar para reconstruir un select
+    function llenarSelect(selectElement, opciones, filtroFn) {
+        // Guardar valor actual por si podemos mantenerlo
+        const valorActual = selectElement.value;
+        
+        // Limpiar
+        selectElement.innerHTML = '';
+
+        // Filtrar y agregar
+        opciones.forEach(dato => {
+            // Siempre agregar la opción vacía (placeholder) o si pasa el filtro
+            if (dato.value === "" || filtroFn(dato)) {
+                const option = document.createElement('option');
+                option.value = dato.value;
+                option.textContent = dato.text;
+                // Restaurar atributos de datos por si se necesitan luego
+                if (dato.areaId) option.setAttribute('data-area-id', dato.areaId);
+                if (dato.deptoId) option.setAttribute('data-departamento-id', dato.deptoId);
+                
+                selectElement.appendChild(option);
+            }
+        });
+
+        // Intentar restaurar selección si aún es válida, si no, resetear
+        // (Verificamos si el valorActual existe en las nuevas opciones del select)
+        const existe = Array.from(selectElement.options).some(opt => opt.value === valorActual);
+        if (existe && valorActual !== "") {
+            selectElement.value = valorActual;
+        } else {
+            selectElement.value = "";
+        }
+    }
+
+    // --- EVENTOS ---
+
+    // 1. Cambio en ÁREA
     selectArea.addEventListener('change', function() {
         const areaId = this.value;
+        console.log("Área cambiada a:", areaId);
 
-        // Filtrar Departamentos
-        selectDepto.innerHTML = ''; // Limpiar
-        opcionesDeptoOriginales.forEach(opcion => {
-            // Mostrar si es el placeholder (value="") o coincide el área
-            if (opcion.value === "" || opcion.dataset.areaId === areaId || areaId === "") {
-                selectDepto.appendChild(opcion);
-            }
-        });
-        selectDepto.value = ""; // Resetear selección
+        // Filtrar Departamentos: Mostrar solo los de esta área
+        llenarSelect(selectDepto, dataDepartamentos, (d) => d.areaId === areaId);
 
-        // Filtrar Cargos (Mostrar todos los cargos de esa área)
-        selectCargo.innerHTML = ''; // Limpiar
-        opcionesCargoOriginales.forEach(opcion => {
-            if (opcion.value === "" || opcion.dataset.areaId === areaId || areaId === "") {
-                selectCargo.appendChild(opcion);
-            }
-        });
-        selectCargo.value = ""; // Resetear selección
+        // Filtrar Cargos: Mostrar solo los de esta área (opcional, pero mejora UX)
+        llenarSelect(selectCargo, dataCargos, (c) => c.areaId === areaId);
     });
 
-    // 2. LOGICA AL CAMBIAR DEPARTAMENTO
+    // 2. Cambio en DEPARTAMENTO
     selectDepto.addEventListener('change', function() {
         const deptoId = this.value;
-        const opcionSeleccionada = this.options[this.selectedIndex];
-        
-        // Autocompletar Área (hacia arriba)
-        if (deptoId && opcionSeleccionada.dataset.areaId) {
-            selectArea.value = opcionSeleccionada.dataset.areaId;
-        }
+        console.log("Departamento cambiado a:", deptoId);
 
-        // Filtrar Cargos (hacia abajo)
-        selectCargo.innerHTML = '';
-        opcionesCargoOriginales.forEach(opcion => {
-            // Mostrar si es placeholder o coincide el departamento
-            if (opcion.value === "" || opcion.dataset.departamentoId === deptoId || deptoId === "") {
-                selectCargo.appendChild(opcion);
+        if (deptoId) {
+            // a) Autocompletar Área hacia arriba
+            const deptoInfo = dataDepartamentos.find(d => d.value === deptoId);
+            if (deptoInfo && deptoInfo.areaId) {
+                if (selectArea.value !== deptoInfo.areaId) {
+                    selectArea.value = deptoInfo.areaId;
+                    // IMPORTANTE: Al cambiar el área programáticamente, debemos refrescar sus dependencias visuales
+                    // pero sin borrar la selección actual de departamento.
+                    // Sin embargo, como el depto ya es válido para el área, solo filtramos cargos.
+                }
             }
-        });
-        // Si el usuario deselecciona departamento (vuelve a ""), restauramos cargos según el área actual
-        if (deptoId === "") {
-            const areaActual = selectArea.value;
-            // Disparamos el evento de área manualmente para re-filtrar
-            selectArea.dispatchEvent(new Event('change')); 
+
+            // b) Filtrar Cargos hacia abajo (solo de este depto)
+            llenarSelect(selectCargo, dataCargos, (c) => c.deptoId === deptoId);
         } else {
-            selectCargo.value = "";
+            // Si selecciona "Seleccionar departamento" (vacío), restaurar cargos según el Área actual
+            const areaId = selectArea.value;
+            if (areaId) {
+                 llenarSelect(selectCargo, dataCargos, (c) => c.areaId === areaId);
+            } else {
+                 llenarSelect(selectCargo, dataCargos, () => true); // Mostrar todos si no hay nada
+            }
         }
     });
 
-    // 3. LOGICA AL CAMBIAR CARGO
+    // 3. Cambio en CARGO
     selectCargo.addEventListener('change', function() {
         const cargoId = this.value;
-        const opcionSeleccionada = this.options[this.selectedIndex];
+        console.log("Cargo cambiado a:", cargoId);
 
         if (cargoId) {
-            // Autocompletar Departamento
-            const deptoId = opcionSeleccionada.dataset.departamentoId;
-            if (deptoId) {
-                selectDepto.value = deptoId;
-                
-                // Al setear el valor manualmente, debemos asegurar que las opciones sean visibles
-                // (por si estaban ocultas por un filtro previo incorrecto)
-                // Una forma rápida es disparar el evento del departamento para que chequee el área
-                    selectDepto.dispatchEvent(new Event('change'));
-                    
-                    // Volvemos a poner el cargo (porque el evento change de depto lo borra al filtrar)
-                    selectCargo.value = cargoId;
+            const cargoInfo = dataCargos.find(c => c.value === cargoId);
+            
+            if (cargoInfo) {
+                // a) Autocompletar Área (Nivel superior)
+                if (cargoInfo.areaId && selectArea.value !== cargoInfo.areaId) {
+                    selectArea.value = cargoInfo.areaId;
+                    // Al cambiar área, deberíamos filtrar deptos para que el usuario solo vea los de esa área
+                    llenarSelect(selectDepto, dataDepartamentos, (d) => d.areaId === cargoInfo.areaId);
+                }
+
+                // b) Autocompletar Departamento (Nivel medio)
+                if (cargoInfo.deptoId && selectDepto.value !== cargoInfo.deptoId) {
+                    // Asegurarnos que el depto esté disponible en la lista (ya lo hicimos arriba al filtrar por área)
+                    selectDepto.value = cargoInfo.deptoId;
+                }
             }
         }
     });

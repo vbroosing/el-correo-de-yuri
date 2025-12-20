@@ -116,23 +116,40 @@ def informe_trabajadores(req):
 @multi_group_required(['Jefe RRHH', 'Personal RRHH'])
 def datos_filtrados(req):
     
-    # CONEXIÓN SIN FILTROS DE BUSQUEDA
-    trabajadores = Trabajador.objects.filter()
-    cargos = Cargo.objects.filter()
+    # 1. Comenzamos con todos los trabajadores
+    trabajadores = Trabajador.objects.all()
 
+    # 2. Obtenemos los valores del GET
+    sexo = req.GET.get('sexo', '').strip()
+    cargo_id = req.GET.get('cargo', '').strip()
+    depto_id = req.GET.get('departamento', '').strip()
+    area_id = req.GET.get('area', '').strip()
+
+    # 3. Aplicamos filtros dinámicamente usando las relaciones (doble guion bajo)
+    
+    if sexo:
+        trabajadores = trabajadores.filter(sexo_trabajador=sexo)
+
+    if cargo_id:
+        # Filtro directo por cargo
+        trabajadores = trabajadores.filter(id_cargo=cargo_id)
+
+    if depto_id:
+        # Viajamos: Trabajador -> Cargo -> Departamento
+        trabajadores = trabajadores.filter(id_cargo__id_departamento=depto_id)
+
+    if area_id:
+        # Viajamos: Trabajador -> Cargo -> Departamento -> Área
+        trabajadores = trabajadores.filter(id_cargo__id_departamento__id_area=area_id)
+
+    # Contexto para la plantilla (mantenemos los filtros para que el form no se resetee visualmente si quieres)
     filtros = {
-        'sexo_trabajador': req.GET.get('sexo', '').strip(),
-        'id_cargo': req.GET.get('cargo', '').strip(),
-        'departamento': req.GET.get('departamento', '').strip(),
-        'area': req.GET.get('area', '').strip(),
+        'sexo': sexo,
+        'cargo': cargo_id,
+        'departamento': depto_id,
+        'area': area_id
     }
 
-    # Aplicar filtros no vacíos
-    for campo, valor in filtros.items():
-        if valor != '':
-            trabajadores = trabajadores.filter(**{campo: valor})
-
-    print(trabajadores)
     return render(req, 'datos-filtrados.html', {
         'trabajadores': trabajadores,
         'filtros': filtros,

@@ -44,7 +44,7 @@ Informe Trabajadores
                 <div class="col-12">
                     <label class="form-label fw-bold">Cargo</label>
                     <div class="input-group">
-                        <select name="cargo" class="form-select">
+                        <select name="cargo" id="select-cargo" class="form-select">
                             <option value="">Selecciona un cargo</option>
                             {% for c in cargos %}
                                 <option value="{{ c.id }}">{{ c.nombre_cargo }}</option>
@@ -57,7 +57,7 @@ Informe Trabajadores
                 <div class="col-12">
                     <label class="form-label fw-bold">Departamento</label>
                     <div class="input-group">
-                        <select name="departamento" class="form-select">
+                        <select name="departamento" id="select-departamento" class="form-select">
                             <option value="">Selecciona un departamento</option>
                             {% for d in departamentos %}
                                 <option value="{{ d.id }}">{{ d.nombre_departamento }}</option>
@@ -70,7 +70,7 @@ Informe Trabajadores
                 <div class="col-12">
                     <label class="form-label fw-bold">Área</label>
                     <div class="input-group">
-                        <select name="area" class="form-select">
+                        <select name="area" id="select-area" class="form-select">
                             <option value="">Selecciona un área</option>
                             {% for a in areas %}
                                 <option value="{{ a.id }}">{{ a.nombre_area }}</option>
