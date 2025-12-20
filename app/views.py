@@ -6,10 +6,16 @@ from django.db import IntegrityError
 from django.contrib.auth.decorators import login_required
 from .decorators import group_required, multi_group_required
 from django.contrib import messages
+from django.http import HttpResponse
+from openpyxl.utils import get_column_letter
+from django.contrib import messages 
 
 # MODELOS
 from app.models import Trabajador, Cargo, Carga_familiar, Area, Departamento, Sexo_trabajador
 
+# DESCARGAS
+import csv
+import openpyxl
 
 # HOME
 @login_required
@@ -115,33 +121,97 @@ def informe_trabajadores(req):
 @multi_group_required(['Jefe RRHH', 'Personal RRHH'])
 def datos_filtrados(req):
     
-    # 1. Comenzamos con todos los trabajadores
-    trabajadores = Trabajador.objects.all()
-
-    # 2. Obtenemos los valores del GET
+    # 1. Obtener parámetros de filtro (GET)
     sexo = req.GET.get('sexo', '').strip()
     cargo_id = req.GET.get('cargo', '').strip()
     depto_id = req.GET.get('departamento', '').strip()
     area_id = req.GET.get('area', '').strip()
-
-    # 3. Aplicamos filtros dinámicamente usando las relaciones (doble guion bajo)
     
+    # Variables de control para exportación
+    export_csv = req.GET.get('export_csv', '').strip()
+    export_excel = req.GET.get('export_excel', '').strip()
+
+    # 2. Aplicar Filtros a la QuerySet base
+    trabajadores = Trabajador.objects.all()
+
     if sexo:
         trabajadores = trabajadores.filter(sexo_trabajador=sexo)
-
     if cargo_id:
-        # Filtro directo por cargo
         trabajadores = trabajadores.filter(id_cargo=cargo_id)
-
     if depto_id:
-        # Viajamos: Trabajador -> Cargo -> Departamento
         trabajadores = trabajadores.filter(id_cargo__id_departamento=depto_id)
-
     if area_id:
-        # Viajamos: Trabajador -> Cargo -> Departamento -> Área
         trabajadores = trabajadores.filter(id_cargo__id_departamento__id_area=area_id)
 
-    # Contexto para la plantilla (mantenemos los filtros para que el form no se resetee visualmente si quieres)
+    # ==========================================
+    # LÓGICA DE EXPORTACIÓN (CSV)
+    # ==========================================
+    if export_csv == '1':
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename="trabajadores-filtrados.csv"'
+        
+        # BOM para que Excel reconozca tildes y ñ en UTF-8
+        response.write(u'\ufeff'.encode('utf8'))
+        
+        writer = csv.writer(response, delimiter=';')
+        
+        # Encabezado
+        writer.writerow(['RUT', 'Nombre', 'Apellidos', 'Sexo', 'Cargo', 'Departamento', 'Área', 'Fecha Ingreso'])
+        
+        # Datos
+        for t in trabajadores:
+            writer.writerow([
+                t.rut_trabajador,
+                t.nombre_trabajador,
+                t.apellidos_trabajador,
+                t.get_sexo_trabajador_display(),
+                t.id_cargo.nombre_cargo,
+                t.id_cargo.id_departamento.nombre_departamento,
+                t.id_cargo.id_departamento.id_area.nombre_area,
+                t.fecha_ingreso_trabajador.strftime("%d-%m-%Y")
+            ])
+        return response
+
+    # ==========================================
+    # LÓGICA DE EXPORTACIÓN (EXCEL .xlsx)
+    # ==========================================
+    if export_excel == '1':
+        response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+        response['Content-Disposition'] = 'attachment; filename="trabajadores-filtrados.xlsx"'
+
+        # Crear libro de trabajo y hoja
+        wb = openpyxl.Workbook()
+        ws = wb.active
+        ws.title = "Trabajadores"
+
+        # Encabezados
+        headers = ['RUT', 'Nombre', 'Apellidos', 'Sexo', 'Cargo', 'Departamento', 'Área', 'Fecha Ingreso']
+        ws.append(headers)
+
+        # Datos
+        for t in trabajadores:
+            ws.append([
+                t.rut_trabajador,
+                t.nombre_trabajador,
+                t.apellidos_trabajador,
+                t.get_sexo_trabajador_display(),
+                t.id_cargo.nombre_cargo,
+                t.id_cargo.id_departamento.nombre_departamento,
+                t.id_cargo.id_departamento.id_area.nombre_area,
+                t.fecha_ingreso_trabajador.strftime("%d-%m-%Y")
+            ])
+
+        # Ajuste básico de ancho de columnas (Opcional, solo estética)
+        for col_num, column_title in enumerate(headers, 1):
+            col_letter = get_column_letter(col_num)
+            ws.column_dimensions[col_letter].width = 20
+
+        wb.save(response)
+        return response
+
+    # ==========================================
+    # RENDERIZADO NORMAL (Si no descarga nada)
+    # ==========================================
     filtros = {
         'sexo': sexo,
         'cargo': cargo_id,
@@ -158,72 +228,73 @@ def datos_filtrados(req):
 def informe_horas_trabajadas(req):
     return render(req, 'informe-horas-trabajadas.html')
 
+# ========================
 # PERFIL PERSONAL RRHH
+# ========================
 @login_required
-@multi_group_required(['Personal RRHH']) # Asumo que solo Personal RRHH puede crear
+@multi_group_required(['Personal RRHH'])
 def llenar_ficha_trabajador(req):
     cargos = Cargo.objects.all()
     
     if req.method == 'POST':
-        # 1. Recolección de datos y validación básica de presencia
-        
-        # Lista de campos POST requeridos (basados en tu modelo Trabajador)
+        # 1. Recolección de datos
         campos_requeridos = [
             'rut_trabajador', 'nombre_trabajador', 'apellidos_trabajador',
             'direccion_trabajador', 'sexo_trabajador', 'id_cargo'
         ]
         
         campos_trabajador = {}
-        error = False
+        error_msg = None # Usamos una variable local para controlar el error
         
         for campo in campos_requeridos:
             valor = req.POST.get(campo, '').strip()
             if not valor:
-                error = f'El campo "{campo}" es obligatorio.'
+                error_msg = f'El campo "{campo}" es obligatorio.'
                 break
             campos_trabajador[campo] = valor
 
-        if error:
-            # Si falta un campo, renderiza con el error
+        # Si hay error básico
+        if error_msg:
+            messages.error(req, error_msg) # Encolamos el mensaje de error
             return render(req, 'llenar-ficha-trabajador.html', {
-                'error': error,
                 'cargos': cargos,
-                'valores_anteriores': req.POST # Para no perder lo que ya escribió el usuario
+                'valores_anteriores': req.POST
             })
         
-        # 2. Validación de Llave Foránea (Cargo)
+        # 2. Validación de Cargo
         try:
-            id_cargo_str = campos_trabajador.pop('id_cargo') # Quitar el ID para obtener la instancia
+            id_cargo_str = campos_trabajador.pop('id_cargo')
             cargo_instance = Cargo.objects.get(id=int(id_cargo_str))
         except (Cargo.DoesNotExist, ValueError):
+            messages.error(req, 'El cargo seleccionado no es válido.')
             return render(req, 'llenar-ficha-trabajador.html', {
-                'error': 'El cargo seleccionado no es válido.',
                 'cargos': cargos,
                 'valores_anteriores': req.POST
             })
         
         # 3. Crear el Trabajador
         try:
-            # La fecha_ingreso_trabajador tiene auto_now_add=True, no la necesitamos en el POST
-            Trabajador.objects.create(
-                id_cargo=cargo_instance, # Asignamos la instancia
+            nuevo_trabajador = Trabajador.objects.create(
+                id_cargo=cargo_instance,
                 **campos_trabajador
             )
-            # Redirigir al listado o a una página de éxito
-            return redirect('trabajador_listado') # Necesitas una URL llamada 'trabajador_listado'
+            
+            # MENSAJE DE ÉXITO
+            messages.success(req, f'¡Trabajador {nuevo_trabajador.nombre_trabajador} creado correctamente!')
+            
+            # Redirigir al informe (listado) para ver que se agregó
+            return redirect('informe_trabajadores') 
             
         except Exception as e:
-             # Manejar posibles errores de base de datos o formato (ej. si el RUT ya existe)
+            # MENSAJE DE ERROR DE BD (ej. Rut duplicado si tuvieras unique=True)
+            messages.error(req, f'Error al guardar en base de datos: {e}')
             return render(req, 'llenar-ficha-trabajador.html', {
-                'error': f'Error al guardar el trabajador: {e}',
                 'cargos': cargos,
                 'valores_anteriores': req.POST
             })
 
     else:
-        # Solicitud GET
         return render(req, 'llenar-ficha-trabajador.html', {'cargos': cargos})
-
     
 # PERFIL TRABAJADOR
 @login_required

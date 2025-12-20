@@ -13,13 +13,16 @@
     <h1 class="text-center mb-4">DATOS FILTRADOS</h1>
 
     <!-- Botones de exportación -->
-    <div class="d-flex justify-content-center mb-4">
-        <a href="export_excel" class="btn btn-success btn-export">
+    <div class="d-flex justify-content-center mb-4 gap-2">
+        <a href="?sexo={{ filtros.sexo }}&cargo={{ filtros.cargo }}&departamento={{ filtros.departamento }}&area={{ filtros.area }}&export_excel=1" 
+        class="btn btn-success btn-export">
             <i class="bi bi-file-earmark-excel"></i> Excel
         </a>
-        <a href="?export_csv=1" class="btn btn-info btn-export text-white">
+
+        <a href="?sexo={{ filtros.sexo }}&cargo={{ filtros.cargo }}&departamento={{ filtros.departamento }}&area={{ filtros.area }}&export_csv=1" 
+        class="btn btn-info btn-export text-white">
             <i class="bi bi-file-earmark-csv"></i> CSV
-        </a>
+    </a>
     </div>
 
     <!-- Lista de trabajadores -->

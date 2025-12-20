@@ -8,6 +8,7 @@ cd ../..
 pip install django
 pip install selenium
 pip install webdriver_manager
+pip install openpyxl
 py manage.py migrate
 
 EJECUCIÓN
