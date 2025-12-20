@@ -8,7 +8,8 @@ from .decorators import group_required, multi_group_required
 from django.contrib import messages
 
 # MODELOS
-from app.models import Trabajador, Cargo, Carga_familiar
+from app.models import Trabajador, Cargo, Carga_familiar, Area, Departamento, Sexo_trabajador
+
 
 # HOME
 @login_required
@@ -91,11 +92,24 @@ def dashboard(req):
     return render(req, 'dashboard.html', context)
     # return render(req, 'dashboard.html', {'notificaciones_pendientes': True})
 
-# PERFIL JEFE RRHH
 @login_required
 @multi_group_required(['Jefe RRHH', 'Personal RRHH'])
 def informe_trabajadores(req):
-    return render(req, 'informe-trabajadores.html')
+    # Consultamos todos los registros para llenar los filtros
+    areas = Area.objects.all()
+    departamentos = Departamento.objects.all()
+    cargos = Cargo.objects.all()
+    
+    # Obtenemos las opciones del choice Sexo_trabajador
+    sexos = Sexo_trabajador.choices
+
+    context = {
+        'areas': areas,
+        'departamentos': departamentos,
+        'cargos': cargos,
+        'sexos': sexos,
+    }
+    return render(req, 'informe-trabajadores.html', context)
 
 
 @login_required
