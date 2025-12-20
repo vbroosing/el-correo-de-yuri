@@ -1,0 +1,4 @@
+django
+selenium
+webdriver_manager
+openpyxl
