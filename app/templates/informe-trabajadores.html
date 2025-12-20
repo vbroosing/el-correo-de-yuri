@@ -13,68 +13,76 @@ Informe Trabajadores
 
 {% block body %}
 
-<div class="filtros-panel bg-light p-4 rounded shadow-sm">
-    <div class="row g-3">
+<div class="contenedor d-flex flex-column justify-content-center align-items-center vh-100">
+    <h1 class="display-4 fw-light titulo_dashboard_jefe">Bienvenido</h1>
+    <hr class="w-25 mx-auto border-dark mb-4">
+
+    <form method="get" action="/datos-filtrados/" class="w-75">
         
-        <div class="col-12">
-            <label class="form-label fw-bold">Sexo</label>
-            <div class="input-group">
-                <select name="sexo" class="form-select">
-                    <option value="">Selecciona una opción</option>
-                    {% for codigo, nombre in sexos %}
-                        <option value="{{ codigo }}">{{ nombre }}</option>
-                    {% endfor %}
-                </select>
-                <span class="input-group-text bg-white border-start-0"><i class="bi bi-person"></i></span>
-            </div>
+        <div class="botones d-flex flex-column gap-3 mb-4">
+            <button type="submit" class="btn btn-lg px-5 py-3 text-white btn_horas_informe_trabajadores">
+                Buscar
+            </button>
         </div>
 
-        <div class="col-12">
-            <label class="form-label fw-bold">Área</label>
-            <div class="input-group">
-                <select name="area" id="select-area" class="form-select">
-                    <option value="">Selecciona un área</option>
-                    {% for a in areas %}
-                        <option value="{{ a.id }}">{{ a.nombre_area }}</option>
-                    {% endfor %}
-                </select>
-                <span class="input-group-text bg-white border-start-0"><i class="bi bi-grid"></i></span>
+        <div class="filtros-panel bg-light p-4 rounded shadow-sm">
+            <div class="row g-3">
+                
+                <div class="col-12">
+                    <label class="form-label fw-bold">Sexo</label>
+                    <div class="input-group">
+                        <select name="sexo" class="form-select">
+                            <option value="">Selecciona una opción</option>
+                            {% for codigo, nombre in sexos %}
+                                <option value="{{ codigo }}">{{ nombre }}</option>
+                            {% endfor %}
+                        </select>
+                        <span class="input-group-text bg-white border-start-0"><i class="bi bi-person"></i></span>
+                    </div>
+                </div>
+
+                <div class="col-12">
+                    <label class="form-label fw-bold">Cargo</label>
+                    <div class="input-group">
+                        <select name="cargo" class="form-select">
+                            <option value="">Selecciona un cargo</option>
+                            {% for c in cargos %}
+                                <option value="{{ c.id }}">{{ c.nombre_cargo }}</option>
+                            {% endfor %}
+                        </select>
+                        <span class="input-group-text bg-white border-start-0"><i class="bi bi-briefcase"></i></span>
+                    </div>
+                </div>
+
+                <div class="col-12">
+                    <label class="form-label fw-bold">Departamento</label>
+                    <div class="input-group">
+                        <select name="departamento" class="form-select">
+                            <option value="">Selecciona un departamento</option>
+                            {% for d in departamentos %}
+                                <option value="{{ d.id }}">{{ d.nombre_departamento }}</option>
+                            {% endfor %}
+                        </select>
+                        <span class="input-group-text bg-white border-start-0"><i class="bi bi-building"></i></span>
+                    </div>
+                </div>
+
+                <div class="col-12">
+                    <label class="form-label fw-bold">Área</label>
+                    <div class="input-group">
+                        <select name="area" class="form-select">
+                            <option value="">Selecciona un área</option>
+                            {% for a in areas %}
+                                <option value="{{ a.id }}">{{ a.nombre_area }}</option>
+                            {% endfor %}
+                        </select>
+                        <span class="input-group-text bg-white border-start-0"><i class="bi bi-grid"></i></span>
+                    </div>
+                </div>
+
             </div>
         </div>
-
-        <div class="col-12">
-            <label class="form-label fw-bold">Departamento</label>
-            <div class="input-group">
-                <select name="departamento" id="select-departamento" class="form-select">
-                    <option value="">Selecciona un departamento</option>
-                    {% for d in departamentos %}
-                        <option value="{{ d.id }}" data-area-id="{{ d.id_area.id }}">
-                            {{ d.nombre_departamento }}
-                        </option>
-                    {% endfor %}
-                </select>
-                <span class="input-group-text bg-white border-start-0"><i class="bi bi-building"></i></span>
-            </div>
-        </div>
-
-        <div class="col-12">
-            <label class="form-label fw-bold">Cargo</label>
-            <div class="input-group">
-                <select name="cargo" id="select-cargo" class="form-select">
-                    <option value="">Selecciona un cargo</option>
-                    {% for c in cargos %}
-                        <option value="{{ c.id }}" 
-                                data-departamento-id="{{ c.id_departamento.id }}"
-                                data-area-id="{{ c.id_departamento.id_area.id }}">
-                            {{ c.nombre_cargo }}
-                        </option>
-                    {% endfor %}
-                </select>
-                <span class="input-group-text bg-white border-start-0"><i class="bi bi-briefcase"></i></span>
-            </div>
-        </div>
-
-    </div>
+    </form>
 </div>
 
 <script src="{% static 'js/informe-trabajadores.js' %}"></script>
