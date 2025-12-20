@@ -42,32 +42,6 @@ Informe Trabajadores
                 </div>
 
                 <div class="col-12">
-                    <label class="form-label fw-bold">Cargo</label>
-                    <div class="input-group">
-                        <select name="cargo" id="select-cargo" class="form-select">
-                            <option value="">Selecciona un cargo</option>
-                            {% for c in cargos %}
-                                <option value="{{ c.id }}">{{ c.nombre_cargo }}</option>
-                            {% endfor %}
-                        </select>
-                        <span class="input-group-text bg-white border-start-0"><i class="bi bi-briefcase"></i></span>
-                    </div>
-                </div>
-
-                <div class="col-12">
-                    <label class="form-label fw-bold">Departamento</label>
-                    <div class="input-group">
-                        <select name="departamento" id="select-departamento" class="form-select">
-                            <option value="">Selecciona un departamento</option>
-                            {% for d in departamentos %}
-                                <option value="{{ d.id }}">{{ d.nombre_departamento }}</option>
-                            {% endfor %}
-                        </select>
-                        <span class="input-group-text bg-white border-start-0"><i class="bi bi-building"></i></span>
-                    </div>
-                </div>
-
-                <div class="col-12">
                     <label class="form-label fw-bold">Área</label>
                     <div class="input-group">
                         <select name="area" id="select-area" class="form-select">
@@ -77,6 +51,38 @@ Informe Trabajadores
                             {% endfor %}
                         </select>
                         <span class="input-group-text bg-white border-start-0"><i class="bi bi-grid"></i></span>
+                    </div>
+                </div>
+
+                <div class="col-12">
+                    <label class="form-label fw-bold">Departamento</label>
+                    <div class="input-group">
+                        <select name="departamento" id="select-departamento" class="form-select">
+                            <option value="">Selecciona un departamento</option>
+                            {% for d in departamentos %}
+                                <option value="{{ d.id }}" data-area-id="{{ d.id_area_id }}">
+                                    {{ d.nombre_departamento }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                        <span class="input-group-text bg-white border-start-0"><i class="bi bi-building"></i></span>
+                    </div>
+                </div>
+
+                <div class="col-12">
+                    <label class="form-label fw-bold">Cargo</label>
+                    <div class="input-group">
+                        <select name="cargo" id="select-cargo" class="form-select">
+                            <option value="">Selecciona un cargo</option>
+                            {% for c in cargos %}
+                                <option value="{{ c.id }}" 
+                                        data-departamento-id="{{ c.id_departamento_id }}"
+                                        data-area-id="{{ c.id_departamento.id_area_id }}">
+                                    {{ c.nombre_cargo }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                        <span class="input-group-text bg-white border-start-0"><i class="bi bi-briefcase"></i></span>
                     </div>
                 </div>
 

@@ -95,14 +95,13 @@ def dashboard(req):
 @login_required
 @multi_group_required(['Jefe RRHH', 'Personal RRHH'])
 def informe_trabajadores(req):
-    # Consultamos todos los registros para llenar los filtros
+    # 1. Recuperamos toda la data necesaria para los filtros
     areas = Area.objects.all()
     departamentos = Departamento.objects.all()
     cargos = Cargo.objects.all()
-    
-    # Obtenemos las opciones del choice Sexo_trabajador
     sexos = Sexo_trabajador.choices
 
+    # 2. La enviamos al template en el contexto
     context = {
         'areas': areas,
         'departamentos': departamentos,
